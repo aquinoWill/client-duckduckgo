@@ -1,7 +1,6 @@
 "use client";
 
 import React, {
-  useEffect,
   createContext,
   useContext,
   useState,
@@ -42,25 +41,11 @@ export const useSearch = () => {
   return context;
 };
 
-async function getData() {
-  const res = await fetch("http://localhost:4004/search/list");
-  return res.json();
-}
-
 export const SearchProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [search, setSearch] = useState<ListSearchTypes[]>([]);
   const [saveSearch, setSaveSearch] = useState<SaveSearchTypes[]>([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getData();
-      setSearch(data);
-    };
-
-    fetchData();
-  }, []);
 
   return (
     <SearchContext.Provider value={{ search, setSearch, saveSearch, setSaveSearch }}>

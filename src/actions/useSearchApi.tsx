@@ -14,7 +14,7 @@ type ReadSearchTypes = {
 export const useSearchApi = () => {
   const { setSearch } = useSearch();
 
-  const fetchSearchData = async (formData: FormData | string) => {
+  const fetchSearchData = async (formData: FormData | string): Promise<ListSearchTypes[]> => {
     const query = typeof formData === "string" ? formData : formData.get("q");
     const res = await fetch(`http://localhost:4004/search/list?q=${query}`);
 
@@ -44,8 +44,9 @@ export const useSaveSearch = () => {
   return { fetchSaveSearchData };
 };
 
+
 export const useReadSearch = () => {
-  const fetchreadSearchData = async (): Promise<ReadSearchTypes[]> => {
+  const fetchReadSearchData = async (): Promise<ReadSearchTypes[]> => {
     const res = await fetch('http://localhost:4004/search/read');
 
     const data = res?.json().then((data: ReadSearchTypes[]) => {
@@ -55,7 +56,17 @@ export const useReadSearch = () => {
     return data;
   };
 
-  return { fetchreadSearchData };
+  return { fetchReadSearchData };
 };
 
-export default { useSearchApi, useSaveSearch, useReadSearch };
+export const useSearchList = () => {
+
+  const fetchSearchList = async (): Promise<ListSearchTypes[]> => {
+    const res = await fetch("http://localhost:4004/search/list");
+    return res.json();
+  }
+
+  return { fetchSearchList }
+}
+
+export default { useSearchApi, useSaveSearch, useReadSearch, useSearchList };
