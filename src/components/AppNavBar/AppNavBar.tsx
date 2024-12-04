@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
-import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import MuiToolbar from '@mui/material/Toolbar';
@@ -27,37 +26,24 @@ const Toolbar = styled(MuiToolbar)({
 
 export function AppNavBar({ children }: { children: React.ReactNode }) {
   return (
-    <AppBar
-      position="fixed"
-      sx={{
-        display: { xs: 'auto'},
-        boxShadow: 0,
-        bgcolor: 'background.paper',
-        backgroundImage: 'none',
-        borderBottom: '1px solid',
-        borderColor: 'divider',
-        top: 'var(--template-frame-height, 0px)',
-      }}
-    >
-      <Toolbar variant="regular">
-        <Stack
-          direction="row"
-          sx={{
-            alignItems: 'center',
-            flexGrow: 1,
-            width: '100%',
-            gap: 1,
-          }}
-        >
-          <Box>
-            <SideMenu />
-          </Box>
-          <Box>
-            { children }
-          </Box>
-        </Stack>
-      </Toolbar>
-    </AppBar>
+    <Toolbar variant="regular">
+      <Stack
+        direction="row"
+        sx={{
+          alignItems: 'center',
+          flexGrow: 1,
+          width: '100%',
+          gap: 1,
+        }}
+      >
+        <Box>
+          <SideMenu />
+        </Box>
+        <Box>
+          { children }
+        </Box>
+      </Stack>
+    </Toolbar>
   );
 }
 
