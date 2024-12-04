@@ -1,17 +1,14 @@
-'use client'
+"use client";
 
-import React from 'react';
-import Badge, { badgeClasses } from '@mui/material/Badge';
-import IconButton, { IconButtonProps } from '@mui/material/IconButton';
+import React from "react";
+import Badge, { badgeClasses } from "@mui/material/Badge";
+import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 
 export interface MenuButtonProps extends IconButtonProps {
   showBadge?: boolean;
 }
 
-export function MenuButton({
-  showBadge = false,
-  ...props
-}: MenuButtonProps) {
+export function MenuButton({ showBadge = false, ...props }: MenuButtonProps) {
   return (
     <Badge
       color="error"

@@ -1,7 +1,13 @@
-import React from 'react';
-import { List, ListItem, ListItemButton, ListItemText, Stack,  } from '@mui/material';
+import React from "react";
+import {
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Stack,
+} from "@mui/material";
 import { useSearchApi } from "@/actions/useSearchApi";
-import { useSearch } from '@/context/SearchContext';
+import { useSearch } from "@/context/SearchContext";
 
 type SaveSearchTypes = {
   query: string;
@@ -16,10 +22,17 @@ export function MenuContent() {
   };
 
   return (
-    <Stack direction='column' sx={{ width: '100%', justifyContent: 'space-between' }}>
+    <Stack
+      direction="column"
+      sx={{ width: "100%", justifyContent: "space-between" }}
+    >
       <List dense>
         {saveSearch.map((item, index) => (
-          <ListItem disablePadding key={index} onClick={() => handleItemClick(item)}>
+          <ListItem
+            disablePadding
+            key={index}
+            onClick={() => handleItemClick(item)}
+          >
             <ListItemButton>
               <ListItemText primary={item.query} />
             </ListItemButton>
