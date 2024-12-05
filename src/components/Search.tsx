@@ -3,34 +3,26 @@
 import { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import { InputSearch, ListSearch, Loading } from '@/components';
-import { useReadSearch, useSearchList } from "@/actions/useSearchApi";
+import { fetchHistorySearch } from "@/actions/useSearchApi";
 import { useSearch } from "@/context/SearchContext";
 
 export function Search() {
-  const { fetchReadSearchData } = useReadSearch();
-  const { fetchSearchList } = useSearchList();
-  const { setSaveSearch, setSearch } = useSearch();
-  const [loading, setLoading] = useState(true);
+  const { setSaveHistorySearch, setSearch } = useSearch();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchSaveData = async () => {
-      const { list } = await fetchReadSearchData();
-      setSaveSearch(list);
-    };
-
-    const fetchListData = async () => {
-      const data = await fetchSearchList();
-      setSearch(data);
+      const { list } = await fetchHistorySearch();
+      setSaveHistorySearch(list);
     };
 
     fetchSaveData();
-    fetchListData();
-    setLoading(false);
-  }, []);
+    setIsLoading(false);
+  }, [setSaveHistorySearch, setSearch]);
 
 
   return (
-    loading ? (
+    isLoading ? (
       <Loading />
     ) : (
       <Box>

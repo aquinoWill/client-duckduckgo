@@ -6,16 +6,14 @@ type ListSearchTypes = {
 };
 
 type ReadSearchTypes = {
-  list: Array<{
-    query: string;
-  }>
+  query: string;
 };
 
 export const useSearchApi = () => {
   const { setSearch } = useSearch();
 
   const fetchSearchData = async (formData: FormData | string): Promise<ListSearchTypes[]> => {
-    const query = typeof formData === "string" ? formData : formData.get("q");
+    const query = typeof formData === "string" ? formData : formData?.get("q");
     const res = await fetch(`http://localhost:4004/search/list?q=${query}`);
 
     const data = res.json().then((data: ListSearchTypes[]) => {
@@ -30,43 +28,29 @@ export const useSearchApi = () => {
 };
 
 
-export const useSaveSearch = () => {
-  const fetchSaveSearchData = async (formData: FormData) => {
-    return await fetch('http://localhost:4004/search/save', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ query: formData.get("q") }),
-    });
-  };
-
-  return { fetchSaveSearchData };
+export const fetchSaveHistorySearch = async (query: string) => {
+  return await fetch('http://localhost:4004/search/save', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ query }),
+  });
 };
 
+export const fetchHistorySearch = async (): Promise<ReadSearchTypes[]> => {
+  const res = await fetch('http://localhost:4004/search/read');
 
-export const useReadSearch = () => {
-  const fetchReadSearchData = async (): Promise<ReadSearchTypes[]> => {
-    const res = await fetch('http://localhost:4004/search/read');
-
-    const data = res?.json().then((data: ReadSearchTypes[]) => {
-      return data;
-    });
-
+  const data = res?.json().then((data: ReadSearchTypes[]) => {
     return data;
-  };
+  });
 
-  return { fetchReadSearchData };
+  return data;
 };
 
-export const useSearchList = () => {
-
-  const fetchSearchList = async (): Promise<ListSearchTypes[]> => {
-    const res = await fetch("http://localhost:4004/search/list");
-    return res.json();
-  }
-
-  return { fetchSearchList }
+export const fetchSearchList = async (): Promise<ListSearchTypes[]> => {
+  const res = await fetch("http://localhost:4004/search/list");
+  return res.json();
 }
 
-export default { useSearchApi, useSaveSearch, useReadSearch, useSearchList };
+export default { useSearchApi, fetchSaveHistorySearch, fetchHistorySearch, fetchSearchList };

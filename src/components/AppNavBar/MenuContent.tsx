@@ -6,7 +6,7 @@ import {
   ListItemText,
   Stack,
 } from "@mui/material";
-import { useSearchApi } from "@/actions/useSearchApi";
+import { useSearchApi, fetchSaveHistorySearch } from "@/actions/useSearchApi";
 import { useSearch } from "@/context/SearchContext";
 
 type SaveSearchTypes = {
@@ -14,11 +14,12 @@ type SaveSearchTypes = {
 };
 
 export function MenuContent() {
-  const { saveSearch, setSaveSearch } = useSearch();
+  const { saveHistorySearch, setSaveHistorySearch } = useSearch();
   const { fetchSearchData } = useSearchApi();
   const handleItemClick = async (item: SaveSearchTypes) => {
+    setSaveHistorySearch([...saveHistorySearch, { query: item.query } as SaveSearchTypes]);
     await fetchSearchData(item.query);
-    setSaveSearch([...saveSearch, { query: item.query } as SaveSearchTypes]);
+    await fetchSaveHistorySearch(item.query);
   };
 
   return (
@@ -27,7 +28,7 @@ export function MenuContent() {
       sx={{ width: "100%", justifyContent: "space-between" }}
     >
       <List dense>
-        {saveSearch.map((item, index) => (
+        {saveHistorySearch.map((item, index) => (
           <ListItem
             disablePadding
             key={index}

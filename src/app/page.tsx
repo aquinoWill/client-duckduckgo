@@ -5,7 +5,7 @@ import { AppNavBar } from "@/components/AppNavBar/AppNavBar";
 
 export default function Home() {
   return (
-    <Container maxWidth="lg">
+    <Container>
       <SearchProvider>
         <AppNavBar>
           <Search />

@@ -1,11 +1,18 @@
-'use client'
+"use client";
 
-import { FormEvent, useState, useMemo, ChangeEvent } from "react";
-import { Stack, TextField, Box, List, ListItem, ListItemText } from "@mui/material";
-import SearchIcon from '@mui/icons-material/Search';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import { useSearchApi, useSaveSearch } from "@/actions/useSearchApi";
+import { FormEvent, useState, useMemo, ChangeEvent, useEffect } from "react";
+import {
+  Box,
+  List,
+  Stack,
+  Tooltip,
+  ListItem,
+  TextField,
+  IconButton,
+  ListItemText,
+} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import { useSearchApi, fetchSaveHistorySearch } from "@/actions/useSearchApi";
 import { useSearch } from "@/context/SearchContext";
 
 type SaveSearchTypes = {
@@ -13,54 +20,57 @@ type SaveSearchTypes = {
 };
 
 export function InputSearch() {
-  const [query, setQuery] = useState<string>('');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [query, setQuery] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [occurrences, setOccurrences] = useState(0);
   const [searchResults, setSearchResults] = useState<SaveSearchTypes[]>([]);
 
-  const { saveSearch, setSaveSearch } = useSearch();
+  const { saveHistorySearch, setSaveHistorySearch } = useSearch();
   const { fetchSearchData } = useSearchApi();
-  const { fetchSaveSearchData } = useSaveSearch();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const queryValue = formData.get("q");
     if (queryValue !== null) {
-      setSaveSearch([...saveSearch, { query: queryValue } as SaveSearchTypes]);
+      setSaveHistorySearch([...saveHistorySearch, { query: queryValue } as SaveSearchTypes]);
       setQuery(queryValue as string);
     }
 
     await fetchSearchData(formData);
-    await fetchSaveSearchData(formData);
+    await fetchSaveHistorySearch(queryValue as string);
   };
 
-  const handleSearch = async (event: ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = async (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const term = event.target.value;
     setSearchTerm(term);
-    setSearchResults(saveSearch);
-    setOccurrences(saveSearch.filter(item => item.query.includes(term)).length);
+    setSearchResults(saveHistorySearch);
+    setOccurrences(
+      saveHistorySearch.filter((item) => item.query.includes(term)).length
+    );
   };
 
-  const highlightedText = (text: string) => {
+  const matchText = (text: string) => {
     if (!searchTerm) return text;
-    const regex = new RegExp(searchTerm, 'gi');
-    return text.replace(regex, match => `${match}`);
+    const regex = new RegExp(searchTerm, "gi");
+    return text.replace(regex, (match) => `${match}`);
   };
 
   const filteredResults = useMemo(() => {
     if (!searchTerm) {
-      setOccurrences(0)
+      setOccurrences(0);
       return [];
-    };
+    }
 
-    return searchResults.filter(item => item.query.toLowerCase().includes(searchTerm.toLowerCase()));
-  }, [searchTerm, searchResults])
+    return searchResults.filter((item) =>
+      item.query.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [searchTerm, searchResults]);
 
-  useMemo(() => {
-    const lastElement = saveSearch[saveSearch.length - 1];
+  useEffect(() => {
+    const lastElement = saveHistorySearch[saveHistorySearch.length - 1];
     setQuery(lastElement?.query);
-  }, [saveSearch]);
+  }, [saveHistorySearch]);
 
   return (
     <Box>
@@ -72,7 +82,7 @@ export function InputSearch() {
                 type="button"
                 aria-label="search"
                 sx={{
-                  display: { xs: 'inline', md: 'none' },
+                  display: { xs: "inline", md: "none" },
                 }}
               >
                 <SearchIcon />
@@ -85,8 +95,8 @@ export function InputSearch() {
             label="Search"
             variant="outlined"
             size="small"
-            value={query ? query : ''}
-            sx={{ display: { md: 'inline-block' }, mr: 1 }}
+            value={query ? query : ""}
+            sx={{ display: { md: "inline-block" }, mr: 1 }}
             slotProps={{
               input: {
                 endAdornment: (
@@ -102,11 +112,11 @@ export function InputSearch() {
                   </div>
                 ),
                 sx: { pr: 0.5 },
-              }
+              },
             }}
             onChange={(event) => {
               setQuery(event.target.value);
-              handleSearch(event);
+              handleSearchChange(event);
             }}
           />
         </Stack>
@@ -116,9 +126,7 @@ export function InputSearch() {
           <List>
             {filteredResults.map((item, index) => (
               <ListItem key={index}>
-                <ListItemText
-                  secondary={highlightedText(item.query)}
-                />
+                <ListItemText secondary={matchText(item.query)} />
               </ListItem>
             ))}
           </List>

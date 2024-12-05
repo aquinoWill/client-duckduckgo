@@ -1,12 +1,6 @@
 "use client";
 
-import React, {
-  createContext,
-  useContext,
-  useState,
-  Dispatch,
-  SetStateAction,
-} from "react";
+import React, { createContext, useContext, useState } from "react";
 
 type ListSearchTypes = {
   url: string;
@@ -20,15 +14,15 @@ type SaveSearchTypes = {
 const initialState: SearwchContextProps = {
   search: [],
   setSearch: () => {},
-  saveSearch: [],
-  setSaveSearch: () => {},
+  saveHistorySearch: [],
+  setSaveHistorySearch: () => {},
 };
 
 interface SearwchContextProps {
   search: ListSearchTypes[];
-  setSearch: Dispatch<SetStateAction<ListSearchTypes[]>>; // arrumar
-  saveSearch: SaveSearchTypes[];
-  setSaveSearch: (saveSearch: SaveSearchTypes[]) => void;
+  setSearch: (search: ListSearchTypes[]) => void;
+  saveHistorySearch: SaveSearchTypes[];
+  setSaveHistorySearch: (saveSearch: SaveSearchTypes[]) => void;
 }
 
 const SearchContext = createContext<SearwchContextProps>(initialState);
@@ -45,10 +39,14 @@ export const SearchProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [search, setSearch] = useState<ListSearchTypes[]>([]);
-  const [saveSearch, setSaveSearch] = useState<SaveSearchTypes[]>([]);
+  const [saveHistorySearch, setSaveHistorySearch] = useState<SaveSearchTypes[]>(
+    []
+  );
 
   return (
-    <SearchContext.Provider value={{ search, setSearch, saveSearch, setSaveSearch }}>
+    <SearchContext.Provider
+      value={{ search, setSearch, saveHistorySearch, setSaveHistorySearch }}
+    >
       {children}
     </SearchContext.Provider>
   );
